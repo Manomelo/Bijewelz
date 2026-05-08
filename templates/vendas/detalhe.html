@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Venda #{{ venda.pk }}{% endblock %}
+{% block content %}
+<h2>Venda #{{ venda.pk }}</h2>
+<p><strong>Data:</strong> {{ venda.data_venda|date:"d/m/Y H:i" }}</p>
+<p><strong>Cliente:</strong> {{ venda.cliente.nome|default:"—" }}</p>
+
+<h5>Itens</h5>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr><th>Produto</th><th>Qtd</th><th>Preço Unit.</th><th>Subtotal</th></tr>
+    </thead>
+    <tbody>
+        {% for item in venda.itens.all %}
+        <tr>
+            <td>{{ item.produto.nome }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>R$ {{ item.preco_unitario }}</td>
+            <td>R$ {{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr><td colspan="3" class="text-end"><strong>Total</strong></td><td><strong>R$ {{ venda.total }}</strong></td></tr>
+    </tfoot>
+</table>
+<a href="{% url 'listar_vendas' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}
