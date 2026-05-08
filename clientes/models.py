@@ -12,5 +12,5 @@ class Cliente(models.Model):
         db_table = 'clientes'
         ordering = ['nome']
 
-        def __str__(self):
-            return self.nome
+    def __str__(self):
+        return self.nome
