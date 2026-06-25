@@ -1,3 +1,4 @@
+from django.db.models import Sum, Count, F, ExpressionWrapper, DecimalField
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from .models import Venda, ItemVenda
@@ -81,11 +82,49 @@ def relatorio_vendas(request):
     if data_fim:
         vendas = vendas.filter(data_venda__date__lte=data_fim)
 
-    total_receita = sum(v.total for v in vendas)
+    total_receita = vendas.aggregate(total=Sum('total'))['total'] or 0
+    total_vendas = vendas.count()
+
+    subtotal = ExpressionWrapper(F('quantidade') * F('preco_unitario'), output_field=DecimalField())
+
+    por_cliente = (
+        vendas
+        .values('cliente__nome', 'usuario__username')
+        .annotate(total=Sum('total'), quantidade=Count('id'))
+        .order_by('-total')
+    )
+
+    por_produto = (
+        ItemVenda.objects
+        .filter(venda__in=vendas)
+        .annotate(subtotal=subtotal)
+        .values('produto__nome')
+        .annotate(
+            quantidade=Sum('quantidade'),
+            receita=Sum('subtotal')
+        )
+        .order_by('-receita')
+    )
+
+    por_categoria = (
+        ItemVenda.objects
+        .filter(venda__in=vendas)
+        .annotate(subtotal=subtotal)
+        .values('produto__categoria')
+        .annotate(
+            quantidade=Sum('quantidade'),
+            receita=Sum('subtotal')
+        )
+        .order_by('-receita')
+    )
 
     return render(request, 'relatorios/vendas.html', {
         'vendas': vendas,
         'total_receita': total_receita,
+        'total_vendas': total_vendas,
+        'por_cliente': por_cliente,
+        'por_produto': por_produto,
+        'por_categoria': por_categoria,
         'data_inicio': data_inicio,
         'data_fim': data_fim,
     })

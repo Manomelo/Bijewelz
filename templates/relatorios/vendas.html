@@ -18,25 +18,73 @@
 </form>
 
 <div class="alert alert-info">
-    <strong>Total de vendas:</strong> {{ vendas|length }} &nbsp;|&nbsp;
+    <strong>Total de vendas:</strong> {{ total_vendas }} &nbsp;|&nbsp;
     <strong>Receita total:</strong> R$ {{ total_receita }}
 </div>
 
+<!-- Vendas por cliente -->
+<h5 class="fw-bold mt-4 mb-3">Por cliente</h5>
 <table class="table table-bordered">
     <thead class="table-dark">
-        <tr><th>#</th><th>Data</th><th>Cliente</th><th>Total</th></tr>
+        <tr><th>Cliente</th><th>Nº de pedidos</th><th>Total gasto</th></tr>
     </thead>
     <tbody>
-        {% for venda in vendas %}
+        {% for item in por_cliente %}
         <tr>
-            <td><a href="{% url 'detalhe_venda' venda.pk %}">#{{ venda.pk }}</a></td>
-            <td>{{ venda.data_venda|date:"d/m/Y H:i" }}</td>
-            <td>{{ venda.cliente.nome|default:"—" }}</td>
-            <td>R$ {{ venda.total }}</td>
+            <td>
+                {% if item.cliente__nome %}
+                    {{ item.cliente__nome }}
+                {% elif item.usuario__username %}
+                    {{ item.usuario__username }} (loja)
+                {% else %}
+                    Cliente não identificado
+                {% endif %}
+            </td>
+            <td>{{ item.quantidade }}</td>
+            <td>R$ {{ item.total }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="4" class="text-center">Nenhuma venda encontrada.</td></tr>
+        <tr><td colspan="3" class="text-center text-muted">Nenhum dado.</td></tr>
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Vendas por produto -->
+<h5 class="fw-bold mt-4 mb-3">Por produto</h5>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr><th>Produto</th><th>Qtd vendida</th><th>Receita</th></tr>
+    </thead>
+    <tbody>
+        {% for item in por_produto %}
+        <tr>
+            <td>{{ item.produto__nome }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>R$ {{ item.receita }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center text-muted">Nenhum dado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Vendas por categoria -->
+<h5 class="fw-bold mt-4 mb-3">Por categoria</h5>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr><th>Categoria</th><th>Qtd vendida</th><th>Receita</th></tr>
+    </thead>
+    <tbody>
+        {% for item in por_categoria %}
+        <tr>
+            <td>{{ item.produto__categoria|default:"Sem categoria" }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>R$ {{ item.receita }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center text-muted">Nenhum dado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}{{ produto.nome }} — Bijewelz{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/loja/" class="text-warning">Início</a></li>
+        <li class="breadcrumb-item"><a href="/loja/produtos/" class="text-warning">Produtos</a></li>
+        <li class="breadcrumb-item active">{{ produto.nome }}</li>
+    </ol>
+</nav>
+
+<div class="row g-5">
+
+    <!-- Imagem -->
+    <div class="col-md-5">
+    {% if produto.imagem %}
+    <img src="{{ produto.imagem.url }}" class="img-fluid rounded" alt="{{ produto.nome }}"
+         style="width: 100%; height: 380px; object-fit: cover;">
+    {% else %}
+    <div class="card d-flex align-items-center justify-content-center"
+         style="height: 380px; background: #f0e8df;">
+        <i class="bi bi-gem text-warning" style="font-size: 7rem;"></i>
+    </div>
+    {% endif %}
+</div>
+
+    <!-- Informações -->
+    <div class="col-md-7">
+        <h2 class="fw-bold mb-2">{{ produto.nome }}</h2>
+        <h3 class="text-warning fw-bold mb-3">R$ {{ produto.preco }}</h3>
+
+        {% if produto.descricao %}
+        <p class="text-muted mb-4">{{ produto.descricao }}</p>
+        {% endif %}
+
+        {% if produto.qtd_estoque == 0 %}
+        <span class="badge bg-secondary fs-6 mb-4">Esgotado</span>
+        {% else %}
+        <p class="text-success mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ produto.qtd_estoque }} unidade(s) disponível(is)
+        </p>
+
+        <form method="POST" action="/loja/carrinho/adicionar/{{ produto.pk }}/">
+            {% csrf_token %}
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <label class="fw-semibold">Quantidade:</label>
+                <input type="number" name="quantidade" value="1" min="1"
+                       max="{{ produto.qtd_estoque }}"
+                       class="form-control" style="width: 80px;">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg px-5">
+                <i class="bi bi-bag-plus me-2"></i>Adicionar ao carrinho
+            </button>
+        </form>
+        {% endif %}
+
+        <hr class="my-4">
+
+        <div class="d-flex gap-4 text-muted small">
+            <span><i class="bi bi-shield-check me-1"></i>Compra segura</span>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

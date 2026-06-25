@@ -19,16 +19,22 @@
             <td>{{ produto.qtd_estoque }}</td>
             <td>{{ produto.estoque_minimo }}</td>
             <td>
-                {% if produto.estoque_baixo %}
-                <span class="badge bg-warning text-dark">Estoque baixo</span>
-                {% else %}
-                <span class="badge bg-success">OK</span>
-                {% endif %}
-            </td>
+    {% if not produto.ativo %}
+    <span class="badge bg-secondary">Inativo</span>
+    {% elif produto.estoque_baixo %}
+    <span class="badge bg-warning text-dark">Estoque baixo</span>
+    {% else %}
+    <span class="badge bg-success">OK</span>
+    {% endif %}
+</td>
             <td>
-                <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-sm btn-warning">Editar</a>
-                <a href="{% url 'excluir_produto' produto.pk %}" class="btn btn-sm btn-danger">Excluir</a>
-            </td>
+    <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-sm btn-warning">Editar</a>
+    {% if produto.ativo %}
+    <a href="{% url 'excluir_produto' produto.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+    {% else %}
+    <a href="{% url 'ativar_produto' produto.pk %}" class="btn btn-sm btn-success">Ativar</a>
+    {% endif %}
+</td>
         </tr>
         {% empty %}
         <tr><td colspan="6" class="text-center">Nenhum produto cadastrado.</td></tr>

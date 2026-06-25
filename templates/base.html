@@ -5,22 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Bijewelz{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #fdf6f0; }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; letter-spacing: 1px; }
+        .navbar { background-color: #1a1a2e !important; }
+        .btn-primary { background-color: #c9a96e; border-color: #c9a96e; color: #1a1a2e; font-weight: 600; }
+        .btn-primary:hover { background-color: #b8935a; border-color: #b8935a; color: #1a1a2e; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+        .card-img-top { border-radius: 12px 12px 0 0; object-fit: cover; height: 220px; background: #e8ddd0; }
+        footer { background-color: #1a1a2e; color: #aaa; }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">Bijewelz</a>
-            <div class="navbar-nav">
-                <a class="nav-link" href="/clientes/">Clientes</a>
-                <a class="nav-link" href="/produtos/">Produtos</a>
-                <a class="nav-link" href="/vendas/">Vendas</a>
-                <a class="nav-link" href="/relatorios/vendas/">Relatórios</a>
-            </div>
-        </div>
-    </nav>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark mb-0">
     <div class="container">
-        {% block content %}{% endblock %}
+        <a class="navbar-brand text-warning" href="/loja/">✦ Bijewelz</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/loja/">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/loja/produtos/">Produtos</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
+    <li class="nav-item">
+        <a class="nav-link" href="/loja/carrinho/">
+            <i class="bi bi-bag fs-5"></i>
+        </a>
+    </li>
+    {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle fs-5"></i> {{ user.username }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/loja/conta/logout/">Sair</a></li>
+        </ul>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="/loja/conta/login/">
+            <i class="bi bi-person-circle fs-5"></i> Entrar
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="btn btn-primary btn-sm px-3" href="/loja/conta/registro/">Cadastrar</a>
+    </li>
+    {% endif %}
+</ul>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</nav>
+
+<div class="{% block container_class %}container py-5{% endblock %}">
+    {% block content %}{% endblock %}
+</div>
+
+<footer class="py-4 mt-auto">
+    <div class="container text-center">
+        <small>© 2026 Bijewelz · Bijuterias com estilo</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
