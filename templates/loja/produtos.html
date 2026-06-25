@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}Produtos — Bijewelz{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+    <!-- Sidebar de filtros -->
+    <div class="col-md-3">
+        <div class="card p-4">
+            <h6 class="fw-bold mb-3">Filtrar produtos</h6>
+            <form method="GET" action="/loja/produtos/">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Buscar</label>
+                    <input type="text" name="q" class="form-control" placeholder="Nome do produto..."
+                           value="{{ request.GET.q }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Preço máximo</label>
+                    <input type="number" name="preco_max" class="form-control" placeholder="R$ 0,00"
+                           value="{{ request.GET.preco_max }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Ordenar por</label>
+                    <select name="ordem" class="form-select">
+                        <option value="">Relevância</option>
+                        <option value="preco_asc" {% if request.GET.ordem == 'preco_asc' %}selected{% endif %}>
+                            Menor preço
+                        </option>
+                        <option value="preco_desc" {% if request.GET.ordem == 'preco_desc' %}selected{% endif %}>
+                            Maior preço
+                        </option>
+                        <option value="nome" {% if request.GET.ordem == 'nome' %}selected{% endif %}>
+                            Nome A-Z
+                        </option>
+                    </select>
+                </div>
+
+            <div class="mb-3">
+    <label class="form-label fw-semibold">Categoria</label>
+    <select name="categoria" class="form-select">
+        <option value="">Todas</option>
+        {% for categoria in categorias %}
+        <option value="{{ categoria.slug }}"
+            {% if categoria_selecionada == categoria.slug %}selected{% endif %}>
+            {{ categoria.nome }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+                <button type="submit" class="btn btn-primary w-100">Aplicar</button>
+                <a href="/loja/produtos/" class="btn btn-outline-secondary w-100 mt-2">Limpar</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Grid de produtos -->
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">{{ produtos|length }} produto(s) encontrado(s)</span>
+        </div>
+        <div class="row g-4">
+            {% for produto in produtos %}
+            <div class="col-6 col-md-4">
+                <div class="card h-100">
+                    {% if produto.imagem %}
+<img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}"
+     style="height: 200px; object-fit: cover;">
+{% else %}
+<div class="card-img-top d-flex align-items-center justify-content-center bg-light"
+     style="height: 200px;">
+    <i class="bi bi-gem text-warning" style="font-size: 3.5rem;"></i>
+</div>
+{% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title fw-semibold">{{ produto.nome }}</h6>
+                        <p class="text-muted small mb-2">{{ produto.descricao|truncatechars:60}}</p>
+                        <p class="text-warning fw-bold mt-auto mb-2">R$ {{ produto.preco }}</p>
+                        {% if produto.qtd_estoque == 0 %}
+                        <span class="badge bg-secondary mb-2">Esgotado</span>
+                        {% endif %}
+                        <a href="/loja/produtos/{{ produto.pk }}/" class="btn btn-primary btn-sm w-100">Ver produto</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <p class="mt-3 text-muted">Nenhum produto encontrado.</p>
+                    <a href="/loja/produtos/" class="btn btn-primary">Ver todos</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

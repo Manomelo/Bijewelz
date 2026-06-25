@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Bijewelz — Bijuterias com Estilo{% endblock %}
+
+{% block container_class %}{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section style="background: linear-gradient(135deg, #1a1a2e 60%, #c9a96e 100%); min-height: 420px;"
+         class="d-flex align-items-center mb-5">
+    <div class="container text-white py-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <p class="text-warning mb-2 fw-semibold">Nova coleção 2026</p>
+                <h1 class="display-4 fw-bold mb-3">Bijuterias que <br>contam sua história</h1>
+                <p class="lead mb-4 text-white-50">Anéis, colares e brincos para cada momento especial.</p>
+                <a href="/loja/produtos/" class="btn btn-primary btn-lg px-5">Ver produtos</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+
+    <!-- Categorias -->
+<section class="mb-5">
+    <h4 class="fw-bold mb-4">Navegue por categoria</h4>
+    <div class="row g-3">
+        {% for categoria in categorias %}
+        <div class="col-6 col-md-3">
+            <a href="/loja/produtos/?categoria={{ categoria.slug }}" class="text-decoration-none">
+                <div class="card text-center overflow-hidden">
+                    {% if categoria.imagem %}
+                    <img src="{{ categoria.imagem.url }}" style="height: 120px; object-fit: cover; width: 100%;">
+                    {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px;">
+                        <i class="bi bi-gem fs-2 text-warning"></i>
+                    </div>
+                    {% endif %}
+                    <div class="p-3">
+                        <span class="fw-semibold text-dark">{{ categoria.nome }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+    <!-- Produtos em destaque -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Produtos em destaque</h4>
+            <a href="/loja/produtos/" class="text-warning text-decoration-none fw-semibold">Ver todos →</a>
+        </div>
+        <div class="row g-4">
+            {% for produto in produtos_destaque %}
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    {% if produto.imagem %}
+<img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}"
+     style="height: 200px; object-fit: cover;">
+{% else %}
+<div class="card-img-top d-flex align-items-center justify-content-center bg-light"
+     style="height: 200px;">
+    <i class="bi bi-gem text-warning" style="font-size: 4rem;"></i>
+</div>
+{% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title fw-semibold">{{ produto.nome }}</h6>
+                        <p class="text-warning fw-bold mb-2">R$ {{ produto.preco }}</p>
+                        <a href="/loja/produtos/{{ produto.pk }}/" class="btn btn-primary btn-sm w-100">Ver produto</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">Nenhum produto cadastrado ainda.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Banner inferior -->
+    <section class="rounded-4 p-5 mb-5 text-center text-white"
+             style="background: linear-gradient(135deg, #1a1a2e, #c9a96e);">
+        <a href="/loja/produtos/" class="btn btn-light fw-semibold px-5">Comprar agora</a>
+    </section>
+
+</div>
+{% endblock %}

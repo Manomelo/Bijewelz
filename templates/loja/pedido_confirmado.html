@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Pedido Confirmado — Bijewelz{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+    <h2 class="fw-bold mt-4 mb-2">Pedido confirmado!</h2>
+    <p class="text-muted mb-1">Obrigado pela sua compra, {{ request.user.username }}.</p>
+    <p class="text-muted mb-4">Pedido <strong>#{{ venda.pk }}</strong> — R$ {{ venda.total }}</p>
+
+    <div class="card mx-auto p-4 mb-4" style="max-width: 500px;">
+        <h6 class="fw-bold mb-3">Itens do pedido</h6>
+        {% for item in venda.itens.all %}
+        <div class="d-flex justify-content-between py-2 border-bottom">
+            <span>{{ item.produto.nome }} × {{ item.quantidade }}</span>
+            <span class="text-warning fw-semibold">R$ {{ item.subtotal }}</span>
+        </div>
+        {% endfor %}
+        <div class="d-flex justify-content-between fw-bold mt-3">
+            <span>Total</span>
+            <span class="text-warning">R$ {{ venda.total }}</span>
+        </div>
+    </div>
+
+    <a href="/loja/" class="btn btn-primary px-5">Voltar à loja</a>
+</div>
+{% endblock %}
