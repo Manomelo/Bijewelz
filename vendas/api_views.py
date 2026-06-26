@@ -1,4 +1,3 @@
-from django.core.serializers import serialize
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from  django.shortcuts import get_object_or_404

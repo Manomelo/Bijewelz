@@ -1,14 +1,15 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import ProtectedError
 from .models import Produto, Categoria
 from .forms import ProdutoForm, CategoriaForm
 
-
+@staff_member_required
 def listar_produtos(request):
     produtos = Produto.objects.all()
     return render(request, 'produtos/listar.html', {'produtos': produtos})
 
-
+@staff_member_required
 def criar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST, request.FILES)
@@ -19,7 +20,7 @@ def criar_produto(request):
         form = ProdutoForm()
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Novo Produto'})
 
-
+@staff_member_required
 def editar_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
@@ -31,7 +32,7 @@ def editar_produto(request, pk):
         form = ProdutoForm(instance=produto)
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Editar Produto'})
 
-
+@staff_member_required
 def excluir_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
@@ -43,19 +44,19 @@ def excluir_produto(request, pk):
         return redirect('listar_produtos')
     return render(request, 'produtos/confirmar_exclusao.html', {'produto': produto})
 
-
+@staff_member_required
 def ativar_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     produto.ativo = True
     produto.save()
     return redirect('listar_produtos')
 
-
+@staff_member_required
 def listar_categorias(request):
     categorias = Categoria.objects.all()
     return render(request, 'produtos/categorias/listar.html', {'categorias': categorias})
 
-
+@staff_member_required
 def criar_categoria(request):
     form = CategoriaForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
@@ -63,7 +64,7 @@ def criar_categoria(request):
         return redirect('listar_categorias')
     return render(request, 'produtos/categorias/form.html', {'form': form, 'titulo': 'Nova Categoria'})
 
-
+@staff_member_required
 def editar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     form = CategoriaForm(request.POST or None, request.FILES or None, instance=categoria)
@@ -72,7 +73,7 @@ def editar_categoria(request, pk):
         return redirect('listar_categorias')
     return render(request, 'produtos/categorias/form.html', {'form': form, 'titulo': 'Editar Categoria'})
 
-
+@staff_member_required
 def excluir_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':

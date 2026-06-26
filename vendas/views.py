@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count, F, ExpressionWrapper, DecimalField
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
@@ -5,12 +6,12 @@ from .models import Venda, ItemVenda
 from clientes.models import Cliente
 from produtos.models import Produto
 
-
+@staff_member_required
 def listar_vendas(request):
     vendas = Venda.objects.all()
     return render(request, 'vendas/listar.html', {'vendas': vendas})
 
-
+@staff_member_required
 def nova_venda(request):
     clientes = Cliente.objects.all()
     produtos = Produto.objects.all()
@@ -66,12 +67,12 @@ def nova_venda(request):
 
     return render(request, 'vendas/nova.html', {'clientes': clientes, 'produtos': produtos})
 
-
+@staff_member_required
 def detalhe_venda(request, pk):
     venda = get_object_or_404(Venda, pk=pk)
     return render(request, 'vendas/detalhe.html', {'venda': venda})
 
-
+@staff_member_required
 def relatorio_vendas(request):
     data_inicio = request.GET.get('data_inicio', '')
     data_fim = request.GET.get('data_fim', '')
